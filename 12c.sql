@@ -1,0 +1,20 @@
+SELECT D.ID_CLUB, SUM(S.SUMA) AS BANI
+FROM SPONSORI S
+JOIN PROIECT P 
+ON (S.ID_PROIECT = P.ID_PROIECT)
+JOIN MEMBRI_ACTIVI M 
+ON (P.REPREZENTANT_PR = M.ID_MEMBRU)
+JOIN DEPARTAMENTE D 
+ON (D.ID_DEPARTAMENT = M.ID_DEPARTAMENT)
+GROUP BY D.ID_CLUB
+HAVING SUM(S.SUMA) = (SELECT MAX(TOTAL)
+                        FROM (SELECT SUM(S1.SUMA) AS TOTAL
+                            FROM SPONSORI S1
+                            JOIN PROIECT P1 
+                            ON (S1.ID_PROIECT = P1.ID_PROIECT)
+                            JOIN MEMBRI_ACTIVI M1 
+                            ON (P1.REPREZENTANT_PR = M1.ID_MEMBRU)
+                            JOIN DEPARTAMENTE D1 
+                            ON (D1.ID_DEPARTAMENT = M1.ID_DEPARTAMENT)
+                            GROUP BY D1.ID_CLUB) MAXIM);
+
